@@ -1,11 +1,13 @@
+import java.util.Scanner;
+
 public class CategorySaving {
     private double analizeExpense;
-    private double userSalary;
+    protected double userSalary;
     private int saveAdvice = 0;
     private static final double VALUE_MAX = 3000.0;
-    private String category = null;
+    protected static String category = null;
     private boolean isHigh = false;
-
+    private Scanner cs = new Scanner(System.in);
 
     public double getAnalizeExpense() {
         return analizeExpense;
@@ -52,14 +54,31 @@ public class CategorySaving {
         return 0;
     }
 
+    public CategorySaving() {
+    }
+
     public void toMuchExpense(double expense, String nameExpense) {
-        if(category != "Entertainment") {
-            return;
+      //  if(category != "E") {
+      //      return;
+      //  }
+        System.out.println("-- Enter the category of the expense");
+        System.out.println("[ E. Entertainment - C. Clothes - B. Bills - D.Alchool/Drugs");
+        category = cs.next();
+        if(category == "E") {
+            saveAdvice = setUserSalary(userSalary);
+            saveAdvice /= 2;
+            if(expense > VALUE_MAX) {
+                System.out.println("Hey man,you are spending over $3000 on " + nameExpense + " try to limit to" + saveAdvice);
+            }
         }
-        saveAdvice = setUserSalary(userSalary);
-        saveAdvice /= 2;
-        if(expense > VALUE_MAX) {
-            System.out.println("Hey man,you are spending over $3000 on " + nameExpense + " try to limit to" + saveAdvice);
-        }
+//        saveAdvice = setUserSalary(userSalary);
+//        saveAdvice /= 2;
+//        if(expense > VALUE_MAX) {
+//            System.out.println("Hey man,you are spending over $3000 on " + nameExpense + " try to limit to" + saveAdvice);
+      //  }
+    }
+
+    public static void main (String[] args) {
+
     }
 }
