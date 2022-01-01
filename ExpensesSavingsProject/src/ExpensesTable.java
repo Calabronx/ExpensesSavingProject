@@ -53,9 +53,40 @@ public class ExpensesTable extends Person {
         amount = expenses;
         System.out.println(name + ":" + "$" + amount);
     }
-    public void add() {
+ public void add() {
+        int counter = 0;
+        boolean success = true;
+        String categoryLetter;
         System.out.println("Please enter quantity of expenses that you have");
-        expensesQuant = sc.nextInt();
+        while(counter<4) {
+            success = true;
+            try {
+                if(counter <3) {
+                    expensesQuant = sc.nextInt();
+                }
+            } catch (InputMismatchException e) {
+                success = false;
+                counter++;
+                if(counter == 4) {
+                    System.out.println();
+                } else {
+                    System.out.println("A letter is a invalid input!");
+                    System.out.println("Sorry, try again");
+                    System.out.println("Enter quantity of expenses");
+                }
+                sc.nextLine();
+
+                if(counter == 4) {
+                    System.out.println("To much wrong attemps, exiting program");
+                    sc.close();
+                    System.exit(0);
+                }
+
+            }
+            if(success) {
+                break;
+            }
+        }
         while (count <= expensesQuant) {
             System.out.println(" -- Enter the name expense " + count + " --");
             nameExpense = sc.next();
@@ -86,19 +117,45 @@ public class ExpensesTable extends Person {
     }
 
 // generar try cath por si el usuario ingresa 0, eso haria lanzar una excepcion fatal y cerrar el programa de mala manera si no se maneja
-    public void getSalary() {
+   public void getSalary() {
+        int counter = 0;
+        boolean success = true;
         System.out.println("Enter your salary amount");
-        try {
-            salary = sc.nextDouble();
-        }catch(InputMismatchException e) {
-            System.out.println("ERROR: Invalid input was entered!");
-        }
-        if(salary<=0) {
-            System.out.println("Sorry a 0 ,negative number or a letter as salary is not allowed...");
-            System.exit(0);
-        }
+        while (counter < 4) {
+            success = true;
+            try {
+                if (counter < 3) {
+                    salary = sc.nextDouble();
+                }
+            } catch (InputMismatchException e) {
+                success = false;
+                counter++;
+                if (counter == 4) {
+                    System.out.println();
+                } else {
+                    System.out.println("A letter is a invalid input!");
+                    System.out.println("Sorry, try again");
+                    System.out.println("Enter your salary amount");
+                }
+                sc.nextLine();
 
-        System.out.print(" Salary: $" + salary);
+                if (counter == 4) {
+                    System.out.println("To much wrong attemps, exiting program");
+                    sc.close();
+                    System.exit(0);
+                }
+
+            }
+            if (success) {
+                break;
+            }
+
+            }
+            if (salary <= 0) {
+            System.out.println("Sorry a 0 or negative number is not allowed...");
+            System.exit(0);
+            System.out.print(" Salary: $" + salary);
+        }
     }
 
     // hacer que el mes sea ingresado por teclado para mayor fluidez con el usuario en este metodo
@@ -108,9 +165,10 @@ public class ExpensesTable extends Person {
         ZonedDateTime zdt = ZonedDateTime.now( z );
         System.out.println("Actual Month: " + zdt.getMonth());
         System.out.println("Until which month would you like to save your money?");
-        System.out.println("Please choose a number acording to the month");
-        System.out.println("1. January 2. Febrary 3. March 4. April 5. May 6. June .7 July 8. Agost 9. September 10. October 11. November 12 . December");
+        System.out.println("Please choose a number acording to the month or enter 20 to avoid this calculation");
+        System.out.println("1. January 2. Febrary 3. March 4. April 5. May 6. June .7 July 8. Agost 9. September 10. October 11. November 12 . December 22. Ignore step");
 
+        try {
         int monthNumber = sc.nextInt();
         switch (monthNumber) {
             case 1:
@@ -161,11 +219,20 @@ public class ExpensesTable extends Person {
                 perMonth = calculateSaving * monthNumber;
                 monthName = "December";
                 break;
+            case 22:
+                break;
             default:
                 monthName = "Invalid month entered, try again";
                 break;
+         }
+        }catch (InputMismatchException in) {
+            in.printStackTrace();
+            System.out.println("Invalid input entered, maybe cause you entered a letter instead a number...");
+            System.exit(0);
         }
-        System.out.println("Saving $" + calculateSaving + " each month for " + monthName + " will reach: $" + perMonth);
+        if(monthNumber != 22) {
+            System.out.println("Saving $" + calculateSaving + " each month for " + monthName + " will reach: $" + perMonth);
+        }
         return perMonth;
     }
 
