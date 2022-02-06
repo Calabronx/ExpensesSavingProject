@@ -34,11 +34,12 @@ public class Main {
         ExpensesTable expenses = new ExpensesTable(user);
         System.out.println("--------------------------------------");
         System.out.println();
-        System.out.println("--------------------------------------");
-        System.out.println();
-        enterSalary(expenses);
-        System.out.println();
-        System.out.println();
+//        if(user.isWorkActive) {
+//            System.out.println("actual employee");
+            enterSalary(expenses);
+//        }else{
+//            expenses.getSavingsOnly();
+//        }
 
         System.out.println("--------------------------------------");
         addExpense(expenses);
@@ -49,7 +50,7 @@ public class Main {
         expenses.statisticsInConsole();
         printList(expenses);
         System.out.println("--------------------------------------");
-        expenses.statisticsExpenses();
+        //expenses.statisticsExpenses();
         System.out.println();
     }
 }
