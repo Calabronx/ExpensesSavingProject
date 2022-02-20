@@ -1,8 +1,12 @@
 /**
  * This program was developed by me and should not be sold or trade for any march
- *  Copyright (C) 2021 Sebastian Calabro
- *   ---------- Calabronx -----
+ * Copyright (C) 2021 Sebastian Calabro
+ * ---------- Calabronx -----
  */
+
+import ExpensProcess.ExpensesTable;
+import Model.Person;
+
 import java.io.*;
 
 public class Main {
@@ -28,18 +32,13 @@ public class Main {
         ex.saveForMonth();
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, InterruptedException {
         Person user = new Person();
 
         ExpensesTable expenses = new ExpensesTable(user);
         System.out.println("--------------------------------------");
         System.out.println();
-//        if(user.isWorkActive) {
-//            System.out.println("actual employee");
-            enterSalary(expenses);
-//        }else{
-//            expenses.getSavingsOnly();
-//        }
+
 
         System.out.println("--------------------------------------");
         addExpense(expenses);
@@ -54,3 +53,4 @@ public class Main {
         System.out.println();
     }
 }
+
