@@ -4,14 +4,11 @@ package ExpensProcess; /**
  * ---------- Calabronx -----
  */
 
-import Model.Expenses;
 import Model.Person;
 import Utils.ExpensesConstants;
 import Utils.FormattedPrices;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -22,39 +19,32 @@ import java.util.*;
 import java.util.List;
 
 public class ExpensesTable extends Person {
-    private List<Expenses> expensesList = new ArrayList<>();
-    private List<Double> list = new ArrayList<>();
-    private List<String> listNames = new ArrayList<>();
     private Person person;
-    private Scanner sc = new Scanner(System.in);
-    private Scanner numbers = new Scanner(System.in);
+
+    private final Scanner sc = new Scanner(System.in);
+    private final Scanner numbers = new Scanner(System.in);
+
     private DecimalFormat formatter = new DecimalFormat("0.00");
+
     private boolean emptyData = false;
-    private boolean otherEmptyData = false;
-    private double expenses = 0.0;
-    private String nameExpense = null;
-    private double totalAmount = 0.0;
-    public double salary = 0.0;
-    private double calculateAmount = 0.0;
-    private double calculateActualSave = 0.0;
-    private double savingsExpenses = 0.0;
-    private int expensesQuant = 0;
-    private int count = 1;
-    private String[] namesArray = new String[100];
-    private String[] expenseArray = new String[100];
-    private int index = 0;
-    private int monthNumber = 0;
+
     private String level = null;
     private String monthName = null;
+    private String nameExpense = null;
+    private final String[] namesArray = new String[100];
+    private final String[] expenseArray = new String[100];
+
+    private int monthNumber = 0;
+
+    private double totalAmount = 0.0;
+    private double expenses = 0.0;
     private double perMonth = 0.0;
-    private double savings = 0.0;
     private double savingTotal = 0.0;
     private double calculateSaveAmount = 0.0;
+    private double calculateAmount = 0.0;
+    private double savingsExpenses = 0.0;
 
     private FormattedPrices formattedPrices = new FormattedPrices();
-    private ExpensesConstants constants;
-
-
 
 
     public ExpensesTable(Person person) {
@@ -73,21 +63,31 @@ public class ExpensesTable extends Person {
         }
         System.out.println("Client expense table name: " + person.getName());
         System.out.println();
-        System.out.println("Are you actual working somewhere? Y/N");
+        System.out.println("This program will offer to make 2 types of request, a ticket that calculates from " +
+                "\n 1. Your savings and your salary,(with mensual income). \n" +
+                " 2. Or a ticket that calculates from your currents savings");
+        System.out.println("Choose the ticket that you want to make, 1 or 2 ");
+        System.out.println("1.Salary Ticket   2.Saving Ticket");
         String response = " ";
         response = sc.next();
-        if (response.equals("N") || response.equals("n")) {
+        if (response.equals("1")) {
+            isWorkActive = true;
+        }
+        if (response.equals("2")) {
             isWorkActive = false;
         }
+
         if (isWorkActive) {
             System.out.println("--Salary Ticket--");
             getSalary();
+        }
 
-        } else {
+        if (!isWorkActive) {
             System.out.println("--Saving Ticket--");
             getSavingsOnly();
         }
     }
+
 
     public void expenseInfo(String name, double amount) {
         name = nameExpense;
@@ -99,11 +99,14 @@ public class ExpensesTable extends Person {
 
     //Cada gasto ingresado que analize segun su categoria, si gasta demasiado o no. Al final comparar lo que podria ganar con sueldo-gastosTotal/2.
     public void add() throws InputMismatchException, NullPointerException {
-        int counter = 0;
+        List<Double> listExpenses = new ArrayList<>();
+        List<String> listNames = new ArrayList<>();
         boolean hasFailed = false;
         String input_flag = "";
         //String categoryLetter;
         int countTries = 0;
+        int count = 0;
+        int index = 0;
         count = 1;
         System.out.println("--EXPENSES ENTER VALUES --");
         System.out.println("Enter 0 to exit the segment");
@@ -119,12 +122,13 @@ public class ExpensesTable extends Person {
                 }*/
 
             //manejar correctamente el flag para el flujo del proceso
-            if (input_flag.equals(constants.PROPERLY_PROCESS)) {
+            if (input_flag.equals(ExpensesConstants.PROPERLY_PROCESS)) {
                 //input_flag = "SUCCESS";
                 nameExpense = sc.next();
                 nameExpense += sc.nextLine();
             }
             if (nameExpense.equals("0")) { // puede lanzar nullpointerexception
+                count--;
                 BigDecimal decimal = BigDecimal.valueOf(totalAmount);
                 String result = NumberFormat.getNumberInstance(Locale.US).format(decimal);
                 System.out.println("----------------------------");
@@ -150,9 +154,7 @@ public class ExpensesTable extends Person {
                     expenses = passed;
                     //System.out.println("Passed:" + expenses);
                 }
-
                 expenses = numbers.nextDouble();
-
 
                 //expenses += numbers.
                 if (expenses == 0) {
@@ -164,7 +166,7 @@ public class ExpensesTable extends Person {
                 expenseArray[index] = result;
                 totalAmount += expenses;
                 expenseInfo(nameExpense, expenses);
-                list.add(expenses);
+                listExpenses.add(expenses);
                 listNames.add(nameExpense);
                 count++;
                 index++;
@@ -172,7 +174,7 @@ public class ExpensesTable extends Person {
                 hasFailed = false;
             } catch (InputMismatchException e) {
                 countTries++;
-                input_flag = constants.FAILED_INPUT;
+                input_flag = ExpensesConstants.FAILED_INPUT;
                 hasFailed = true;
                 System.out.println("Wrong input, try again");
             } catch (NullPointerException e) {
@@ -190,13 +192,17 @@ public class ExpensesTable extends Person {
     }
 
     public void formattingExpenses(double calculate_salary, double percentage) {
+        double calculateActualSave = calculate_salary - totalAmount;
+        double noWorkTotal = person.getSavings() + calculateActualSave;
         calculateSaving = calculate_salary - totalAmount;
-        calculateAmount = calculate_salary / calculateSaving;
-        calculateActualSave = calculate_salary - totalAmount;
-        savingsExpenses = savings - totalAmount;
-        savingTotal = savings + calculateSaving;
-        double noWorkTotal = savings + calculateActualSave;
-        calculateSaveAmount = savingsExpenses / savings;
+        //calculateAmount = calculate_salary / calculateSaving;
+        savingsExpenses = person.getSavings() - totalAmount;
+
+        savingTotal = person.getSavings() + calculateSaving;
+        if (person.getSavings() < totalAmount) {
+            noWorkTotal = 0.0;
+        }
+        calculateSaveAmount = savingsExpenses / person.getSavings();
 
         BigDecimal decimal = BigDecimal.valueOf(calculateSaving);
         formattedPrices.resultSaveExpenses = NumberFormat.getNumberInstance(Locale.US).format(decimal);
@@ -208,49 +214,82 @@ public class ExpensesTable extends Person {
         formattedPrices.resultSave = NumberFormat.getNumberInstance(Locale.US).format(decimal_3);
         BigDecimal decimal_4 = BigDecimal.valueOf(calculateActualSave);
         formattedPrices.resultNoWork = NumberFormat.getNumberInstance(Locale.US).format(decimal_4);
-        BigDecimal decimal_5 = BigDecimal.valueOf(savingTotal);
-        formattedPrices.resultTotal = NumberFormat.getNumberInstance(Locale.US).format(decimal_5);
+
         BigDecimal decimal_6 = BigDecimal.valueOf(noWorkTotal);
         formattedPrices.resultSavedNosalary = NumberFormat.getNumberInstance(Locale.US).format(decimal_6);
-        BigDecimal decimal_7 = BigDecimal.valueOf(savings);
+        BigDecimal decimal_7 = BigDecimal.valueOf(person.getSavings());
         formattedPrices.resultSavingsNoWork = NumberFormat.getNumberInstance(Locale.US).format(decimal_7);
-        BigDecimal decimal_8 = BigDecimal.valueOf(savingsExpenses);
-        formattedPrices.resulyOfSaveOnly = NumberFormat.getNumberInstance(Locale.US).format(decimal_8);
-        BigDecimal decimal_9 = BigDecimal.valueOf(percentage);
-        formattedPrices.resultPercentSave = NumberFormat.getNumberInstance(Locale.US).format(decimal_9);
+
+        try {
+            if (savingsExpenses <= 0) {
+                savingsExpenses = 0;
+                savingTotal = 0;
+                formattedPrices.resulyOfSaveOnly = "0";
+                formattedPrices.resultPercentSave = "0";
+                formattedPrices.resultTotal = "0";
+            } else {
+                BigDecimal decimal_8 = BigDecimal.valueOf(savingsExpenses);
+                formattedPrices.resulyOfSaveOnly = NumberFormat.getNumberInstance(Locale.US).format(decimal_8);
+
+                BigDecimal decimal_5 = BigDecimal.valueOf(savingTotal);
+                formattedPrices.resultTotal = NumberFormat.getNumberInstance(Locale.US).format(decimal_5);
+            }
+
+            if (calculateAmount == Double.POSITIVE_INFINITY || calculateAmount == Double.NEGATIVE_INFINITY) {
+                System.out.println("Value is infinite");
+                percentage = 10;
+                BigDecimal decimal_9 = BigDecimal.valueOf(percentage);
+                formattedPrices.resultPercentSave = NumberFormat.getNumberInstance(Locale.US).format(decimal_9);
+            } else {
+                BigDecimal decimal_9 = BigDecimal.valueOf(percentage);
+                formattedPrices.resultPercentSave = NumberFormat.getNumberInstance(Locale.US).format(decimal_9);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            System.out.println("Error de formateo, arreglar...");
+            System.out.println(percentage);
+        }
+//        System.out.println(percentage);
+//        System.out.println(savingTotal);
     }
 
     public void calculateSavingPercent() {
-        double calculate = salary;
-        double half_salary = salary / 2;
-        double percent = salary * (34.0 / 100);
-        double percentSavings = savings * (34.0 / 100);
-        double percent_minusSave = savings * (20.0 / 100);
-        double percentMinus = salary * (20.0 / 100);
-        double half_savings = savings / 2;
+        double calculate = person.getThisSalary();
+        double half_salary = person.getThisSalary() / 2;
+        double percent = person.getThisSalary() * (34.0 / 100);
+        double percentSavings = person.getSavings() * (34.0 / 100);
+        double percent_minusSave = person.getSavings() * (20.0 / 100);
+        double percentMinus = person.getThisSalary() * (20.0 / 100);
+        double half_savings = person.getSavings() / 2;
 
-        calculateSaving = calculate - totalAmount;
-        calculateAmount = calculate / calculateSaving;
-        calculateSaveAmount = savingsExpenses / savings;
+        calculateSaving = totalAmount - calculate;
+        if (calculateSaving <= 0) {
+            calculateSaving = 0;
+        }
 
-        formattingExpenses(salary, calculateAmount);
+        calculateAmount = calculate / totalAmount;
+
+        calculateSaveAmount = savingsExpenses / person.getSavings();
+        DecimalFormat dec = new DecimalFormat("0.0");
+        dec.format(totalAmount);
+        formattingExpenses(person.getThisSalary(), calculateAmount);
 
         if (person.isWorkActive) {
             if (calculateSaving >= half_salary) {
-                level = constants.SAVING_LEVEL_MAX;
+                level = ExpensesConstants.SAVING_LEVEL_MAX;
             } else if (calculateSaving >= percent) {
-                level = constants.SAVING_LEVEL_MEDIUM;
+                level = ExpensesConstants.SAVING_LEVEL_MEDIUM;
             } else if (calculateSaving <= percentMinus) {
-                level = constants.SAVING_LEVEL_LOW;
+                level = ExpensesConstants.SAVING_LEVEL_LOW;
             }
 
         } else if (!person.isWorkActive) {
             if (savingsExpenses >= half_savings) {
-                level = constants.SAVING_LEVEL_MAX;
+                level = ExpensesConstants.SAVING_LEVEL_MAX;
             } else if (calculateSaving >= percentSavings) {
-                level = constants.SAVING_LEVEL_MEDIUM;
+                level = ExpensesConstants.SAVING_LEVEL_MEDIUM;
             } else if (calculateSaving <= percent_minusSave) {
-                level = constants.SAVING_LEVEL_LOW;
+                level = ExpensesConstants.SAVING_LEVEL_LOW;
             }
         }
     }
@@ -259,9 +298,10 @@ public class ExpensesTable extends Person {
     public void getSalary() {
         BigDecimal decimal;
         BigDecimal anotherDecimal;
-        savings = 0.0;
+        double savings = 0.0;
         int counter = 0;
         int counter_saves = 0;
+        double salary = 0.0;
         boolean success = true;
         while (counter_saves < 4) {
             boolean successSaves = true;
@@ -269,8 +309,9 @@ public class ExpensesTable extends Person {
                 System.out.println("Enter your current savings that you have");
                 if (counter < 3) {
                     savings = numbers.nextDouble();
-                    System.out.println(formatter.format(savings));
-                    decimal = BigDecimal.valueOf(savings);
+                    person.setSavings(savings);
+                    System.out.println(formatter.format(person.getSavings()));
+                    decimal = BigDecimal.valueOf(person.getSavings());
                     formattedPrices.resultSavings = NumberFormat.getNumberInstance(Locale.US).format(decimal);
                     System.out.println("--Savings : $" + formattedPrices.resultSavings);
                 }
@@ -297,8 +338,9 @@ public class ExpensesTable extends Person {
             try {
                 if (counter < 3) {
                     salary = numbers.nextDouble();
+                    person.setSalary(salary);
                     //System.out.println(formatter.format(salary));
-                    anotherDecimal = BigDecimal.valueOf(salary);
+                    anotherDecimal = BigDecimal.valueOf(person.getThisSalary());
                     formattedPrices.resultSalary = NumberFormat.getNumberInstance(Locale.US).format(anotherDecimal);
                     System.out.println("--Your salary is : $" + formattedPrices.resultSalary);
                 }
@@ -325,16 +367,17 @@ public class ExpensesTable extends Person {
                 break;
             }
         }
-        if (salary <= 0) {
+        if (person.getThisSalary() <= 0) {
             System.out.println("Sorry a 0 or negative number is not allowed...");
             System.exit(0);
-            System.out.print(" Salary: $" + salary);
+            System.out.print(" Salary: $" + person.getThisSalary());
         }
     }
 
     public void getSavingsOnly() {
         int counter_saves = 0;
         int counter = 0;
+        double savings = 0.0;
         BigDecimal decimal;
         isWorkActive = false;
         while (counter_saves < 4) {
@@ -343,7 +386,8 @@ public class ExpensesTable extends Person {
                 System.out.println("Enter your current savings that you have");
                 if (counter < 3) {
                     savings = numbers.nextDouble();
-                    BigDecimal decimal_1 = BigDecimal.valueOf(savings);
+                    person.setSavings(savings);
+                    BigDecimal decimal_1 = BigDecimal.valueOf(person.getSavings());
                     formattedPrices.resultSavings = NumberFormat.getNumberInstance(Locale.US).format(decimal_1);
                     System.out.println("--Savings : $" + formattedPrices.resultSavings);
                 }
@@ -366,7 +410,7 @@ public class ExpensesTable extends Person {
         }
         try {
             //System.out.println(formatter.format(savings));
-            decimal = BigDecimal.valueOf(savings);
+            decimal = BigDecimal.valueOf(person.getSavings());
             formattedPrices.resultSavings = NumberFormat.getNumberInstance(Locale.US).format(decimal);
         } catch (InputMismatchException ex) {
             ex.getCause();
@@ -374,91 +418,108 @@ public class ExpensesTable extends Person {
         }
     }
 
-    public double bringSalary() {
-        return this.salary;
-    }
-
     // hacer que el mes sea ingresado por teclado para mayor fluidez con el usuario en este metodo
 
     public double saveForMonth() {
-        ZoneId z = ZoneId.of("America/Buenos_Aires");
-        ZonedDateTime zdt = ZonedDateTime.now(z);
-        System.out.println("Actual Month: " + zdt.getMonth());
-        System.out.println("Until which month would you like to save your money?");
-        System.out.println("Please choose a number acording to the month or enter 20 to avoid this calculation");
-        System.out.println("1. January 2. Febrary 3. March 4. April 5. May 6. June .7 July 8. Agost 9. September 10. October 11. November 12 . December 22. Ignore step");
+        if (isWorkActive) {
+            ZoneId z = ZoneId.of("America/Buenos_Aires");
+            ZonedDateTime zdt = ZonedDateTime.now(z);
+            System.out.println("Actual Month: " + zdt.getMonth());
+            System.out.println("Until which month would you like to save your money?");
+            System.out.println("Please choose a number acording to the month or enter 20 to avoid this calculation");
+            System.out.println("1. January 2. Febrary 3. March 4. April 5. May 6. June .7 July 8. Agost 9. September 10. October 11. November 12 . December 22. Ignore step");
 
-        try {
-            monthNumber = numbers.nextInt();
-            switch (monthNumber) {
-                case 1:
-                    perMonth = calculateSaving * monthNumber;
-                    monthName = "January";
-                    break;
-                case 2:
-                    perMonth = calculateSaving * monthNumber;
-                    monthName = "February";
-                    break;
-                case 3:
-                    perMonth = calculateSaving * monthNumber;
-                    monthName = "March";
-                    break;
-                case 4:
-                    perMonth = calculateSaving * monthNumber;
-                    monthName = "April";
-                    break;
-                case 5:
-                    perMonth = calculateSaving * monthNumber;
-                    monthName = "May";
-                    break;
-                case 6:
-                    perMonth = calculateSaving * monthNumber;
-                    monthName = "June";
-                    break;
-                case 7:
-                    perMonth = calculateSaving * monthNumber;
-                    monthName = "July";
-                    break;
-                case 8:
-                    perMonth = calculateSaving * monthNumber;
-                    monthName = "August";
-                    break;
-                case 9:
-                    perMonth = calculateSaving * monthNumber;
-                    monthName = "September";
-                    break;
-                case 10:
-                    perMonth = calculateSaving * monthNumber;
-                    monthName = "October";
-                    break;
-                case 11:
-                    perMonth = calculateSaving * monthNumber;
-                    monthName = "November";
-                    break;
-                case 12:
-                    perMonth = calculateSaving * monthNumber;
-                    monthName = "December";
-                    break;
-                case 22:
-                    break;
-                default:
-                    monthName = "Invalid month entered, try again";
-                    break;
+            int monthsLeft = 0;
+
+            try {
+                monthNumber = numbers.nextInt();
+                switch (monthNumber) {
+                    case 1:
+                        monthsLeft = monthNumber - zdt.getMonthValue();
+                        perMonth = calculateSaving * monthsLeft;
+                        monthName = "January";
+                        break;
+                    case 2:
+                        monthsLeft = monthNumber - zdt.getMonthValue();
+                        perMonth = calculateSaving * monthsLeft;
+                        monthName = "February";
+                        break;
+                    case 3:
+                        monthsLeft = monthNumber - zdt.getMonthValue();
+                        perMonth = calculateSaving * monthsLeft;
+                        monthName = "March";
+                        break;
+                    case 4:
+                        monthsLeft = monthNumber - zdt.getMonthValue();
+                        perMonth = calculateSaving * monthsLeft;
+                        monthName = "April";
+                        break;
+                    case 5:
+                        monthsLeft = monthNumber - zdt.getMonthValue();
+                        perMonth = calculateSaving * monthsLeft;
+                        monthName = "May";
+                        break;
+                    case 6:
+                        monthsLeft = monthNumber - zdt.getMonthValue();
+                        perMonth = calculateSaving * monthsLeft;
+                        monthName = "June";
+                        break;
+                    case 7:
+                        monthsLeft = monthNumber - zdt.getMonthValue();
+                        perMonth = calculateSaving * monthsLeft;
+                        monthName = "July";
+                        break;
+                    case 8:
+                        monthsLeft = monthNumber - zdt.getMonthValue();
+                        perMonth = calculateSaving * monthsLeft;
+                        monthName = "August";
+                        break;
+                    case 9:
+                        monthsLeft = monthNumber - zdt.getMonthValue();
+                        perMonth = calculateSaving * monthsLeft;
+                        monthName = "September";
+                        break;
+                    case 10:
+                        monthsLeft = monthNumber - zdt.getMonthValue();
+                        perMonth = calculateSaving * monthsLeft;
+                        monthName = "October";
+                        break;
+                    case 11:
+                        monthsLeft = monthNumber - zdt.getMonthValue();
+                        perMonth = calculateSaving * monthsLeft;
+                        monthName = "November";
+                        break;
+                    case 12:
+                        monthsLeft = monthNumber - zdt.getMonthValue();
+                        perMonth = calculateSaving * monthsLeft;
+                        monthName = "December";
+                        break;
+                    case 22:
+                        break;
+                    default:
+                        monthName = "Invalid month entered, try again";
+                        break;
+                }
+            } catch (InputMismatchException in) {
+                in.printStackTrace();
+                System.out.println("Invalid input entered, maybe cause you entered a letter instead a number...");
+                //System.exit(0);
             }
-        } catch (InputMismatchException in) {
-            in.printStackTrace();
-            System.out.println("Invalid input entered, maybe cause you entered a letter instead a number...");
-            //System.exit(0);
-        }
-        if (monthNumber != 22) {
-            BigDecimal decimal_8 = BigDecimal.valueOf(perMonth);
-            formattedPrices.resultPermonth = NumberFormat.getNumberInstance(Locale.US).format(decimal_8);
-            System.out.println("Saving $" + formattedPrices.resultSave + " each month for " + monthName + " will reach: $" + formattedPrices.resultPermonth);
+            if (monthNumber != 22) {
+                double forMonth = perMonth + savingsExpenses;
+                BigDecimal decimal_8 = BigDecimal.valueOf(perMonth);
+                formattedPrices.resultPermonth = NumberFormat.getNumberInstance(Locale.US).format(decimal_8);
+                BigDecimal decimal_9 = BigDecimal.valueOf(forMonth);
+                formattedPrices.resultForMonth = NumberFormat.getNumberInstance(Locale.US).format(decimal_9);
+
+                System.out.println("Saving $" + formattedPrices.resultSave + " each month for " + monthName + " will reach: $" + formattedPrices.resultPermonth);
+                System.out.println("And for that month, the total will be: " + "$" + formattedPrices.resultForMonth);
 //        } else if(!person.isWorkActive) {
 //            System.out.println("Saving $" + resulyOfSaveOnly + " each month for " + monthName + " will reach: $" + perMonth);
 //            BigDecimal decimal_9 = BigDecimal.valueOf(perMonth);
 //            resultPermonth = NumberFormat.getNumberInstance(Locale.US).format(decimal_9);
 //        }
+            }
         }
         return perMonth;
 
@@ -536,10 +597,7 @@ public class ExpensesTable extends Person {
                 for (i = 0; i < namesArray.length; i++) {
                     System.out.println(namesArray[i] + ": " + "$" + expenseArray[anotherCount]);
                     anotherCount++;
-                    if (namesArray[i] == null) {
-                        break;
-                    }
-                    if (expenseArray[anotherCount] == null) {
+                    if (namesArray[i] == null || expenseArray[anotherCount] == null) {
                         break;
                     }
                 }
@@ -572,7 +630,7 @@ public class ExpensesTable extends Person {
             if (monthNumber != 22) {
                 System.out.println("Saving $" + formattedPrices.resultSaveExpenses + " each month for " + monthName + " will reach: $" + formattedPrices.resultPermonth);
             }
-            System.out.println("Total Money Saved will be : $" + formattedPrices.resultTotal);
+            System.out.println("Total Money Saved until now : $" + formattedPrices.resultTotal);
             System.out.println("SAVING LEVEL: " + level);
         } else {
             System.out.println("Actual Date: " + zdt.getDayOfMonth() + " " + zdt.getMonth() + " of " + zdt.getYear());
@@ -582,7 +640,7 @@ public class ExpensesTable extends Person {
             System.out.println("Mensual Saving in ARS : $" + formattedPrices.resulyOfSaveOnly);
             System.out.println("Percent Saving over Income in ARS : %" + formattedPrices.resultPercentSave);
             //System.out.println("Saving $" + resulyOfSaveOnly + " each month for " + monthName + " will reach: $" + resultPermonth);
-            System.out.println("Total Money Saved will be : $" + formattedPrices.resultSavedNosalary);
+            System.out.println("Total Money Saved until now: $" + formattedPrices.resultSavedNosalary);
             System.out.println("SAVING LEVEL: " + level);
         }
     }
@@ -616,14 +674,10 @@ public class ExpensesTable extends Person {
                 for (i = 0; i < namesArray.length; i++) {
                     System.out.println(namesArray[i] + ": " + "$" + expenseArray[anotherCount]);
                     anotherCount++;
-                    if (namesArray[i] == null) {
-                        break;
-                    }
-                    if (expenseArray[anotherCount] == null) {
+                    if (namesArray[i] == null || expenseArray[anotherCount] == null) {
                         break;
                     }
                 }
-
                 statisticsExpenses();
             } else {
                 System.out.println(" ---No expenses added in list--- ");

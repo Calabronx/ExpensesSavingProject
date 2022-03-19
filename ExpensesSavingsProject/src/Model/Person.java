@@ -10,6 +10,8 @@ public class Person {
     protected static double calculateSaving = 0.0;
     protected static double total = 0.0;
     protected static String name;
+    private static double salary = 0.0;
+    private static double savings = 0.0;
     public static boolean isWorkActive = true;
 
     public Person() {
@@ -57,5 +59,21 @@ public class Person {
 
     public static void setIsWorkActive(boolean isWorkActive) {
         Person.isWorkActive = isWorkActive;
+    }
+
+    public double getThisSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+
+    public double getSavings() {
+        return savings;
+    }
+
+    public void setSavings(double savings) {
+        Person.savings = savings;
     }
 }
