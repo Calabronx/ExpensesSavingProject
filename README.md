@@ -11,7 +11,7 @@ IMPORTANT: Java 11 is required to run this program
 
 -- How to execute
 
-1) Stand up in src folder of the program
+1) Open the command Line and stand up in src folder of the program
 ![image](https://user-images.githubusercontent.com/69681105/159269527-bb5ce1a3-4102-4f35-b691-614fb7728b0b.png)
 
 2)Run program with the comand: java Main
