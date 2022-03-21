@@ -7,6 +7,8 @@ If any wants to contribute, and with programming advices will be very appreciate
 This program was developed by me and should not be sold or trade for any march
 2021 Sebastian Calabro
 
+IMPORTANT: Java 11 is required to run this program
+
 -- How to execute
 
 1) Stand up in src folder of the program
