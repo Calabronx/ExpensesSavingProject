@@ -49,6 +49,33 @@ IMPORTANT: Java 15 is required to run this program
 
 *** A GUI Interface for this program is currently in development. Soon for use!
 
+** Actulize
+Beta Gui available in releases
+
+![image](https://user-images.githubusercontent.com/69681105/171265732-212a53a8-732d-4a40-9642-c21afb41c0b2.png)
+
+![image](https://user-images.githubusercontent.com/69681105/171265816-d24b392b-672b-443c-a713-dac30a4c03a6.png)
+
+![image](https://user-images.githubusercontent.com/69681105/171265991-91541ea1-250c-4e5a-8eb5-08bbc160275d.png)
+
+![image](https://user-images.githubusercontent.com/69681105/171266059-236a40d3-28bb-40f7-856c-1c1341b3f37c.png)
+
+![image](https://user-images.githubusercontent.com/69681105/171266189-446e413a-3e38-41f6-be6b-7ae18befde39.png)
+
+![image](https://user-images.githubusercontent.com/69681105/171266257-ed8e00e8-f1d2-42ec-90ed-377749206330.png)
+
+![image](https://user-images.githubusercontent.com/69681105/171266350-6f80faa1-2f05-4be5-a91a-7369e3d26cf8.png)
+
+![image](https://user-images.githubusercontent.com/69681105/171266387-051f1678-add0-4783-ade5-e808668ed7ee.png)
+
+![image](https://user-images.githubusercontent.com/69681105/171266438-e5731522-3e1f-4dab-8ff1-40b12fb899ab.png)
+
+![image](https://user-images.githubusercontent.com/69681105/171266578-9d2f35c8-d8cd-4090-86c3-f54d6ac4a0e4.png)
+
+
+
+
+
 ---------- Calabronx -----
 
 
