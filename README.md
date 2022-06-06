@@ -1,6 +1,6 @@
 # ExpensesSavingProject
 A program for calculation of mensual expenses, to save money for particular month. Manage economy as its best !.
-To execute the program use the Command Line
+To execute the program use the Command Line version or the beta GUI Desktop App version.
 
 If any wants to contribute, and with programming advices will be very appreciated!!
 
