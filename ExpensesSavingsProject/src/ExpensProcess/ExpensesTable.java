@@ -281,6 +281,8 @@ public class ExpensesTable extends Person {
                 level = ExpensesConstants.SAVING_LEVEL_MEDIUM;
             } else if (calculateSaving <= percentMinus) {
                 level = ExpensesConstants.SAVING_LEVEL_LOW;
+            } else {
+                level = ExpensesConstants.SAVING_LEVEL_LOW;
             }
 
         } else if (!person.isWorkActive) {
@@ -289,6 +291,8 @@ public class ExpensesTable extends Person {
             } else if (calculateSaving >= percentSavings) {
                 level = ExpensesConstants.SAVING_LEVEL_MEDIUM;
             } else if (calculateSaving <= percent_minusSave) {
+                level = ExpensesConstants.SAVING_LEVEL_LOW;
+            } else {
                 level = ExpensesConstants.SAVING_LEVEL_LOW;
             }
         }
@@ -530,8 +534,8 @@ public class ExpensesTable extends Person {
         JFileChooser saveFile = new JFileChooser();
         System.out.println("-------------------------------");
         try {
-            String src = JOptionPane.showInputDialog("Enter a name for the ticket file, and a type extension that you prefer");
-            saveFile.setSelectedFile(new File(src));
+            String src = JOptionPane.showInputDialog("Enter a name for the ticket file");
+            saveFile.setSelectedFile(new File(src + ".txt"));
             //saveFile.showSaveDialog(saveFile);
         } catch (NullPointerException e) {
             System.out.println("Save file option canceled");
@@ -571,19 +575,28 @@ public class ExpensesTable extends Person {
             saveFile();
         }
         if (!person.isWorkActive) {
+            System.out.println("-------------------------------");
             System.out.println("INGRESOS Y GASTOS MENSUALES");
-            System.out.println("---------------");
+            System.out.println("-------------------------------");
+            System.out.println("Username: " + person.getName());
+            System.out.println("----------Wallet amounts-----------");
             System.out.println("Actual savings: $" + formattedPrices.resultSavings);
             System.out.println("Savings after expenses: $" + formattedPrices.resulyOfSaveOnly);
+            System.out.println("-------------------------------");
             System.out.println();
             System.out.println("--------Expenses List--------");
             System.out.println("ACTUAL SITUATION ->");
         } else {
+            System.out.println("-------------------------------");
             System.out.println("INGRESOS Y GASTOS MENSUALES");
+            System.out.println("-------------------------------");
+            System.out.println("Username: " + person.getName());
+            System.out.println("----------Wallet amounts-----------");
             System.out.println("Salary: $" + formattedPrices.resultSalary);
-            System.out.println("---------------");
-            //System.out.println("Actual savings: $" + resultSavingsNoWork);
+            System.out.println("Actual savings: $" + formattedPrices.resultSavings);
             System.out.println("Savings after expenses: $" + formattedPrices.resulyOfSaveOnly);
+            System.out.println("-------------------------------");
+            //System.out.println("Actual savings: $" + resultSavingsNoWork);
             System.out.println();
             System.out.println("--------Expenses List--------");
             System.out.println("ACTUAL SITUATION ->");
@@ -632,6 +645,7 @@ public class ExpensesTable extends Person {
             }
             System.out.println("Total Money Saved until now : $" + formattedPrices.resultTotal);
             System.out.println("SAVING LEVEL: " + level);
+            System.out.println("-------------------------------");
         } else {
             System.out.println("Actual Date: " + zdt.getDayOfMonth() + " " + zdt.getMonth() + " of " + zdt.getYear());
             System.out.println("Username: " + person.getName());
@@ -642,23 +656,30 @@ public class ExpensesTable extends Person {
             //System.out.println("Saving $" + resulyOfSaveOnly + " each month for " + monthName + " will reach: $" + resultPermonth);
             System.out.println("Total Money Saved until now: $" + formattedPrices.resultSavedNosalary);
             System.out.println("SAVING LEVEL: " + level);
+            System.out.println("-------------------------------");
         }
     }
 
     public void statisticsInConsole() {
         try {
             if (!person.isWorkActive) {
+                System.out.println("-------------------------------");
                 System.out.println("INGRESOS Y GASTOS MENSUALES");
-                System.out.println("---------------");
+                System.out.println("-------------------------------");
+                System.out.println("Username: " + person.getName());
+                System.out.println("----------Wallet amounts-----------");
                 System.out.println("Actual savings: $" + formattedPrices.resultSavings);
                 System.out.println("Savings after expenses: $" + formattedPrices.resulyOfSaveOnly);
                 System.out.println();
                 System.out.println("--------Expenses List--------");
                 System.out.println("ACTUAL SITUATION ->");
             } else {
+                System.out.println("-------------------------------");
                 System.out.println("INGRESOS Y GASTOS MENSUALES");
+                System.out.println("-------------------------------");
+                System.out.println("Username: " + person.getName());
+                System.out.println("----------Wallet amounts-----------");
                 System.out.println("Salary: $" + formattedPrices.resultSalary);
-                System.out.println("---------------");
                 System.out.println("Actual savings: $" + formattedPrices.resultSavingsNoWork);
                 System.out.println("Savings after expenses: $" + formattedPrices.resulyOfSaveOnly);
                 System.out.println();
