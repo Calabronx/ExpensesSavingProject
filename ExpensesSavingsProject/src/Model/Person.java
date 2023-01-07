@@ -6,59 +6,63 @@ package Model;
  * ---------- Calabronx -----
  */
 public class Person {
-    protected static double percentOverIncome = 0.0;
-    protected static double calculateSaving = 0.0;
-    protected static double total = 0.0;
-    protected static String name;
-    private static double salary = 0.0;
-    private static double savings = 0.0;
-    public static boolean isWorkActive = true;
+    private String name;
+    private double percentOverIncome = 0.0;
+    private double calculateSaving = 0.0;
+    private double total = 0.0;
+    private double salary = 0.0;
+    private double savings = 0.0;
+    private boolean isWorkActive = true;
 
     public Person() {
+    }
+
+    public double getSalary() {
+        return salary;
     }
 
     public Person(String name) {
         this.name = name;
     }
 
-    public static double getPercentOverIncome() {
+    public double getPercentOverIncome() {
         return percentOverIncome;
     }
 
-    public static void setPercentOverIncome(double percentOverIncome) {
-        Person.percentOverIncome = percentOverIncome;
+    public void setPercentOverIncome(double percentOverIncome) {
+        this.percentOverIncome = percentOverIncome;
     }
 
-    public static double getCalculateSaving() {
+    public double getCalculateSaving() {
         return calculateSaving;
     }
 
-    public static void setCalculateSaving(double calculateSaving) {
-        Person.calculateSaving = calculateSaving;
+    public void setCalculateSaving(double calculateSaving) {
+        this.calculateSaving = calculateSaving;
     }
 
-    public static double getTotal() {
+    public double getTotal() {
         return total;
     }
 
-    public static void setTotal(double total) {
-        Person.total = total;
+    public void setTotal(double total) {
+        this.total = total;
     }
 
-    public static String getName() {
+    public String getName() {
         return name;
     }
 
-    public static void setName(String name) {
-        Person.name = name;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public static boolean isIsWorkActive() {
+    public boolean isWorkActive() {
         return isWorkActive;
     }
 
-    public static void setIsWorkActive(boolean isWorkActive) {
-        Person.isWorkActive = isWorkActive;
+    public void setWorkActive(boolean workActive) {
+        isWorkActive = workActive;
     }
 
     public double getThisSalary() {
@@ -74,6 +78,6 @@ public class Person {
     }
 
     public void setSavings(double savings) {
-        Person.savings = savings;
+        this.savings = savings;
     }
 }

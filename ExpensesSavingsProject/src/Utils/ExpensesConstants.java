@@ -15,5 +15,6 @@ public final class ExpensesConstants {
     public static String SAVING_LEVEL_MAX = "HIGH";
     public static String SAVING_LEVEL_MEDIUM = "MEDIUM";
     public static String SAVING_LEVEL_LOW = "LOW";
+    public static String SAVING_LEVEL_ZERO = "ZERO";
 
 }
