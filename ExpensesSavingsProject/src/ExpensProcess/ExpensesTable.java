@@ -35,6 +35,8 @@ public class ExpensesTable {
     private String level = null;
     private String monthName = null;
     private String nameExpense = null;
+
+    private String objectiveName;
     private final String[] namesArray = new String[100];
     private final String[] expenseArray = new String[100];
 
@@ -47,6 +49,8 @@ public class ExpensesTable {
     private double calculateSaveAmount = 0.0;
     private double calculateAmount = 0.0;
     private double savingsExpenses = 0.0;
+    private double objectiveAmount = 0.0;
+    private boolean objectiveChosen = false;
 
     private FormattedPrices formattedPrices = new FormattedPrices();
 
@@ -193,7 +197,7 @@ public class ExpensesTable {
 //                break;
 //            }
         }
-
+        objectiveToMake();
     }
 
     public void formattingExpenses(double calculate_salary, double percentage) {
@@ -689,6 +693,7 @@ public class ExpensesTable {
             System.out.println("SAVING LEVEL: " + level);
             System.out.println("--------------------------------------");
             System.out.println("--------------------------------------");
+            statisticsObjective(); // objective stats
         } else {
             System.out.println("END SITUATION ->");
             System.out.println("---------------------------------\n" +
@@ -769,6 +774,85 @@ public class ExpensesTable {
         System.out.println("Copyright (C) 2021-2022 Sebastian Calabro");
         System.out.println();
         System.out.println("---------- Calabronx -----");
+    }
+
+    public void objectiveToMake() {
+        System.out.println("--------------------------------------");
+        System.out.println("--------------------------------------");
+        NumberFormat format = NumberFormat.getCurrencyInstance();
+        while (!objectiveChosen) {
+            System.out.println("You want to add and objective to achieve?");
+            System.out.println("Objectives example: To save for a videogame, clothes, a new car,etc");
+            System.out.println("(Y/N) Yes or Not");
+            System.out.println("--------------------------------------");
+            String answer = sc.next();
+            if (answer.equals("y") || answer.equals("Y")) {
+                System.out.println("Enter the name of the objective");
+                objectiveName = sc.next();
+                System.out.println("Objective name: " + objectiveName);
+                System.out.println("--------------------------------------");
+                System.out.println("Enter the amount of the objective");
+                objectiveAmount = numbers.nextDouble();
+                String objectiveAmntStr = format.format(objectiveAmount);
+                System.out.println("Objective amount: " + objectiveAmntStr);
+                System.out.println("--------------------------------------");
+                objectiveChosen = true;
+            } else if ((answer.equals("n") || answer.equals("N"))) {
+                break;
+            } else {
+                System.out.println("Wrong input entered, enter Y or N");
+            }
+        }
+        System.out.println("--------------------------------------");
+    }
+
+    public void statisticsObjective() {
+        System.out.println("--------------------------------------");
+        System.out.println("--------------------------------------");
+        ZoneId z = ZoneId.of("America/Buenos_Aires");
+        ZonedDateTime zdt = ZonedDateTime.now(z);
+        int monthNumberToday = zdt.getMonthValue();
+        int countMonths = 0;
+        double achieveMonthly = 0.0;
+        double leftToAchieve = 0.0;
+        boolean flag = false;
+        if (objectiveChosen) {
+            if (savingsExpenses < objectiveAmount) {
+                leftToAchieve = objectiveAmount - savingsExpenses;
+            } else {
+                leftToAchieve = savingsExpenses - objectiveAmount;
+            }
+            double salaryRestSave = person.getSalary() - totalAmount;
+            NumberFormat format = NumberFormat.getCurrencyInstance();
+            String leftTo = format.format(leftToAchieve);
+            String objAmountStr = format.format(objectiveAmount);
+            String salaryRestStr = format.format(salaryRestSave);
+            String expensesTotal = format.format(totalAmount);
+
+            while (!flag) {
+                achieveMonthly = salaryRestSave * countMonths;
+                if (achieveMonthly >= objectiveAmount) {
+                    flag = true;
+
+                }
+                countMonths++;
+            }
+            System.out.println();
+            System.out.println("**** OBJECTIVE STATISTICS ****");
+            System.out.println("--------------------------------------");
+            System.out.println("Statistics of objective");
+            System.out.println("--------------------------------------");
+            System.out.println("** Name : " + objectiveName);
+            System.out.println("** Amount : " + objAmountStr);
+            System.out.println("** Amount left to achieve goal: " + leftTo);
+            System.out.println("** Amount of maximum monthly expenses: " + expensesTotal);
+            //if(countMonths < 1) {
+            //  System.out.println("Time left to reach (with these mensual expenses in mind): " + countMonths + "days");
+            System.out.println("** Time left to reach (with these mensual expenses in mind): " + countMonths + "months");
+            System.out.println("** Saving " + salaryRestStr + " of your salary will reach your goal with these metrics");
+            System.out.println("--------------------------------------");
+            System.out.println("--------------------------------------");
+        }
     }
 }
 
