@@ -4,9 +4,6 @@ To execute the program use the Command Line version or the beta GUI Desktop App 
 
 If any wants to contribute, and with programming advices will be very appreciated!!
 
-This program was developed by me and should not be sold or trade for any march
-2021 Sebastian Calabro
-
 IMPORTANT: Java 15 is required to run this program
 
 
